@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "air-datepicker": "^3.3.5",
+    "toastr": "^2.1.4"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rollup": "^3.16.0",
+    "rollup-plugin-combine": "^2.1.1",
+    "rollup-plugin-match": "^1.0.0",
+    "rollup-plugin-postcss": "^0.2.0",
+    "rollup-plugin-scss": "^3.0.0",
+    "sass": "^1.44.0"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  }
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Title</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+          crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
+
+  <!-- Tempus Dominus JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.2.10/dist/js/tempus-dominus.min.js"
+          crossorigin="anonymous"></script>
+
+  <!-- Tempus Dominus Styles -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.2.10/dist/css/tempus-dominus.min.css"
+        crossorigin="anonymous">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+          integrity="sha256-BRqBN7dYgABqtY9Hd4ynE+1slnEw+roEPFzQ7TRRfcg=" crossorigin="anonymous"></script>
+  <style>
+    #main {
+      background-color: #f8f8f8
+    }
+
+    #content {
+      background-color: #ffffff;
+      margin-right: -5px;
+    }
+
+    #contentdetails {
+      background-color: #ffffff;
+      border-left: 1px dashed #dcdcdc;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      pointer-events: none;
+      fill: currentColor;
+      margin-right: 10px;
+    }
+
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+      background-color: #d7d7d7;
+      color: black;
+    }
+
+    .nav-pills .nav-link:hover {
+      background-color: #d7d7d7
+    }
+
+    .nav-pills .nav-link {
+      padding: 0;
+    }
+
+    .filter .nav-item .filter-link {
+      font-size: 11px;
+      margin-left: 5px;
+    }
+
+    .clicked {
+      color: orangered;
+    }
+
+
+  </style>
+
+</head>
+<body>
+
+<header class="text-bg-dark">
+  <nav class="navbar pt-0 pb-0" id="header">
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-1">
+            <a style="color: white" href="#">Login as Admin <i class="bi bi-gear" style="font-size: 1rem; color: white; margin-left: 2px"></i></a>
+          </div>
+          <div class="col-md-1">
+            <div class="input-group">
+              <input type="text" class="form-control"  style="height: 25px" placeholder="Поиск">
+            </div>
+          </div>
+          <div class="col-md-4 ">
+          </div>
+          <div class="col-md-6">
+            <div class="float-end"><a class="logout" style="color: white" href="/logout">Logout</a></div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="container-fluid min-vh-100 d-flex flex-column" id="main">
+  <div class="row ">
+    <div class="col-md-1 p-lg-0 mt-1 ">
+      <div class="d-flex flex-column flex-shrink-0 me-1 mt-1 ">
+        <ul class="nav nav-pills flex-column mb-auto ms-2 sidemenu">
+          <li>
+            <a href="#" class="nav-link link-dark" id="addnewtaskbtn">
+              <i class="bi bi-plus-square"  style="font-size: 1rem; color: darkred;"></i>
+              Добавить задачу
+            </a>
+          </li>
+          <hr>
+          <li class="nav-item">
+            <a href="/" class="nav-link link-dark">
+              <i class="bi bi-inbox" style="font-size: 2rem; color: cornflowerblue;"></i>
+              Поток задач
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link link-dark">
+              <i class="bi bi-calendar-date" style="font-size: 2rem; color: green;"></i>
+              Сегодня
+            </a>
+          </li>
+          <hr>
+          <li>
+            <a href="/calendar" class="nav-link link-dark  active">
+              <i class="bi bi-calendar-event" style="font-size: 2rem; color: orangered;"></i>
+              Календарь
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-11 min-vh-100 d-flex flex-column mt-1" id="content">
+      <div id='calendar'></div>
+    </div>
+
+  </div>
+</div>
+</div>
+<div class="modal fade" id="addnewtaskmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Добавление новой задачи</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row needs-validation" id="addnewtaskform" novalidate>
+          <div class="input-group mb-3">
+            <span class="input-group-text">Название       </span>
+            <input type="text" class="form-control" id="tasktitle" aria-label="Username"
+                   aria-describedby="basic-addon1" required>
+          </div>
+
+          <div class="input-group mt-2">
+            <span class="input-group-text">Описание задачи</span>
+            <textarea class="form-control" id="taskdescription" required></textarea>
+          </div>
+
+          <div class="input-group log-event mt-2" id="taskdatestart" data-td-target-input="nearest"
+               data-td-target-toggle="nearest">
+            <span class="input-group-text">Дата Исполнения</span>
+            <input id="taskstartdate" type="text" class="form-control"
+                   data-td-target="#datetimepicker1"
+                   required>
+            <span class="input-group-text" data-td-target="#datetimepicker1"
+                  data-td-toggle="datetimepicker">
+          <i class="bi bi-calendar"></i>
+        </span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="submit" id="addnewtasktodbbtn" class="btn btn-primary">Добавить задачу</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="module">
+  import './js/addnewtaskcalendar.js';
+  import './js/onload_calendar.js';
+
+  import './js/toastrg.js';
+</script>
+
+</body>
+</html>
