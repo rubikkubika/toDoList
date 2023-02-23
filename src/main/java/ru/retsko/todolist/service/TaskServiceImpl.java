@@ -2,13 +2,11 @@ package ru.retsko.todolist.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.retsko.todolist.dao.TaskDao;
+import ru.retsko.todolist.dao.TaskRepository;
 import ru.retsko.todolist.mappers.TaskMapper;
 import ru.retsko.todolist.model.dto.TaskDto;
-import ru.retsko.todolist.model.entity.Task;
 import ru.retsko.todolist.model.enums.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -18,46 +16,51 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
     @PersistenceContext
     EntityManager entityManager;
-    private final TaskDao taskDao;
+    private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
-    public TaskServiceImpl(TaskDao taskDao, TaskMapper taskMapper) {
-        this.taskDao = taskDao;
+    public TaskServiceImpl(TaskRepository taskRepository, TaskMapper taskMapper) {
+        this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
     }
 
     @Override
-    public List<TaskDto> getAlltask() {
-        return taskMapper.toDtoList(taskDao.findAll());
+    public List<TaskDto> getAllTask() {
+        return taskMapper.toDtoList(taskRepository.findAll());
     }
 
     @Override
     public TaskDto getTaskById(Long id) {
-        return taskMapper.toDto(taskDao.findById(id).get());
+        if (taskRepository.findById(id).isPresent()) {
+            return taskMapper.toDto((taskRepository.findById(id).get()));
+        }
+        return null;
     }
 
     @Override
     public List<TaskDto> getFilteredTask(LocalDateTime startfilterdate, LocalDateTime endfilterdate, TaskStatus taskStatus) {
 
         endfilterdate = endfilterdate.plusDays(1);
-        return taskMapper.toDtoList(taskDao.findByStartBetweenAndStatus(startfilterdate, endfilterdate, taskStatus));
+        return taskMapper.toDtoList(taskRepository.findByStartBetweenAndStatus(startfilterdate, endfilterdate, taskStatus));
     }
 
     @Override
     public void addNewTask(TaskDto taskDto) {
         taskDto.setStatus(TaskStatus.CREATED);
-        taskDao.save(taskMapper.toModel(taskDto));
+        taskRepository.save(taskMapper.toModel(taskDto));
     }
 
     @Override
     public void deleteTask(Long id) {
-        taskDao.deleteById(id);
+        taskRepository.deleteById(id);
     }
 
     @Override
     public void executeTask(Long id) {
-        taskDao.findById(id).get().setStatus(TaskStatus.COMPLETED);
-        taskDao.flush();
+        if (taskRepository.findById(id).isPresent()) {
+            taskRepository.findById(id).get().setStatus(TaskStatus.COMPLETED);
+            taskRepository.flush();
+        }
     }
 
     @Transactional
@@ -68,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTop10TaskbyStatus(TaskStatus taskStatus) {
-        return taskMapper.toDtoList(taskDao.findTop10ByStatus(taskStatus));
+    public List<TaskDto> getTop10TaskByStatus(TaskStatus taskStatus) {
+        return taskMapper.toDtoList(taskRepository.findTop10ByStatus(taskStatus));
     }
 }

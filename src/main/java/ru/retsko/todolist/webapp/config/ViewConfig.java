@@ -9,6 +9,5 @@ public class ViewConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
         registry.addViewController("/calendar").setViewName("calendar");
-        registry.addViewController("/test").setViewName("test");
     }
 }

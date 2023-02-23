@@ -2,15 +2,22 @@ package ru.retsko.todolist.webapp.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.retsko.todolist.model.dto.TaskDto;
-import ru.retsko.todolist.model.entity.Task;
 import ru.retsko.todolist.model.enums.TaskStatus;
 import ru.retsko.todolist.service.TaskServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/task")
@@ -25,12 +32,12 @@ public class TaskController {
     @GetMapping("/all")
     ResponseEntity<List<TaskDto>> getAllTask() {
 
-        return ResponseEntity.ok(taskService.getAlltask());
+        return ResponseEntity.ok(taskService.getAllTask());
     }
 
     @GetMapping("/filtered")
-    ResponseEntity<List<TaskDto>> getFilteredTask(@RequestParam(name = "startfilterdate", defaultValue = "") LocalDateTime startfilterdate,
-                                                  @RequestParam(name = "endfilterdate", defaultValue = "") LocalDateTime endfilterdate) {
+    ResponseEntity<List<TaskDto>> getFilteredTask(@RequestParam(name = "startfilterdate") LocalDateTime startfilterdate,
+                                                  @RequestParam(name = "endfilterdate") LocalDateTime endfilterdate) {
 
         return ResponseEntity.ok(taskService.getFilteredTask(startfilterdate, endfilterdate, TaskStatus.CREATED));
     }
@@ -53,7 +60,7 @@ public class TaskController {
     @GetMapping("/toptencompleted")
     ResponseEntity<List<TaskDto>> getTop10CompletedTask() {
 
-        return ResponseEntity.ok(taskService.getTop10TaskbyStatus(TaskStatus.COMPLETED));
+        return ResponseEntity.ok(taskService.getTop10TaskByStatus(TaskStatus.COMPLETED));
     }
 
     @PatchMapping("/executetask")
