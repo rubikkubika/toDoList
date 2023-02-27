@@ -11,9 +11,7 @@ import java.util.List;
 @Component
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface TaskMapper {
-
     TaskDto toDto(Task task);
-
 
     Task toModel(TaskDto taskDto);
 
