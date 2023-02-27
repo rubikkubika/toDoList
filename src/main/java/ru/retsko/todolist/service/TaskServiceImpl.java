@@ -8,6 +8,7 @@ import ru.retsko.todolist.dao.TaskRepository;
 import ru.retsko.todolist.exception.ResourceNotFoundException;
 import ru.retsko.todolist.mappers.TaskMapper;
 import ru.retsko.todolist.model.dto.TaskDto;
+import ru.retsko.todolist.model.entity.Task;
 import ru.retsko.todolist.model.enums.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -32,8 +33,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTaskById(Long id) {
-        return taskMapper.toDto((taskRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Product with id " + id + " not found"))));
+        return taskMapper.toDto(loadTask(id));
     }
 
     @Override
@@ -50,21 +50,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(Long id) {
-        if (taskRepository.existsById(id)) {
-            taskRepository.deleteById(id);
-        }else{
-            throw new ResourceNotFoundException("Product with id " + id + " not found");
-        }
+        taskRepository.delete(loadTask(id));
     }
 
+    @Transactional
     @Override
     public void executeTask(Long id) {
-        taskRepository.findById(id).ifPresentOrElse(
-                task -> task.setStatus(TaskStatus.COMPLETED),
-                () -> {
-                    throw new ResourceNotFoundException("Product with id " + id + " not found");
-                }
-        );
+        Task taskToUpdate = taskRepository.getReferenceById(id);
+        if (taskToUpdate.getStatus() == TaskStatus.COMPLETED) {
+            throw new ResourceNotFoundException("Статус у закупки с Id № " + id + " уже COMPLETED");
+        } else {
+            taskToUpdate.setStatus(TaskStatus.COMPLETED);
+            entityManager.flush();
+        }
     }
 
     @Transactional
@@ -77,5 +75,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> getTop10TaskByStatus(TaskStatus taskStatus) {
         return taskMapper.toDtoList(taskRepository.findTop10ByStatus(taskStatus));
+    }
+
+    private Task loadTask(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
     }
 }

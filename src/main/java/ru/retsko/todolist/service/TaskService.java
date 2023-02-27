@@ -18,6 +18,7 @@ public interface TaskService {
     void deleteTask(Long id);
 
     void executeTask(Long id);
+
     void editTask(TaskDto taskDto);
 
     List<TaskDto> getTop10TaskByStatus(TaskStatus taskStatus);

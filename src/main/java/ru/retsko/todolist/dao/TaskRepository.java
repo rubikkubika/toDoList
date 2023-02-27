@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long>, PagingAndSortingRepository<Task, Long> {
     List<Task> findByStartBetweenAndStatus(LocalDateTime startFilterDate, LocalDateTime endFilterDate, TaskStatus taskStatus);
-    List<Task> findTop10ByStatus(TaskStatus taskStatus);
 
+    List<Task> findTop10ByStatus(TaskStatus taskStatus);
 }

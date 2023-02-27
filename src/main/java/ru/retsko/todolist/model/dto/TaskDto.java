@@ -17,17 +17,10 @@ import java.time.LocalDateTime;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id", scope = TaskDto.class)
 public class TaskDto {
-
-
     private Long id;
-
     private String title;
-
     private String description;
-
     private TaskStatus status;
-
     private LocalDateTime end;
-
     private LocalDateTime start;
 }

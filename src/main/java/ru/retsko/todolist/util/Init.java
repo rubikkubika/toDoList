@@ -42,8 +42,5 @@ public class Init {
                     .build();
             entityManager.persist(task);
         }
-
     }
-
-
 }

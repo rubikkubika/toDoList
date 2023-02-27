@@ -21,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
-
     private final TaskServiceImpl taskService;
 
     public TaskController(TaskServiceImpl taskService) {
@@ -29,15 +28,13 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-   List<TaskDto> getAllTask() {
-
+    List<TaskDto> getAllTask() {
         return taskService.getAllTask();
     }
 
     @GetMapping("/filtered")
     List<TaskDto> getFilteredTask(@RequestParam(name = "startfilterdate") LocalDateTime startFilterDate,
-                                                  @RequestParam(name = "endfilterdate") LocalDateTime endFilterDate) {
-
+                                  @RequestParam(name = "endfilterdate") LocalDateTime endFilterDate) {
         return taskService.getFilteredTask(startFilterDate, endFilterDate, TaskStatus.CREATED);
     }
 
@@ -58,7 +55,6 @@ public class TaskController {
 
     @GetMapping("/toptencompleted")
     List<TaskDto> getTop10CompletedTask() {
-
         return taskService.getTop10TaskByStatus(TaskStatus.COMPLETED);
     }
 
