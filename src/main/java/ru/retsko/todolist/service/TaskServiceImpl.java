@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.retsko.todolist.dao.TaskRepository;
+import ru.retsko.todolist.exception.CheckStatusException;
 import ru.retsko.todolist.exception.ResourceNotFoundException;
 import ru.retsko.todolist.mappers.TaskMapper;
 import ru.retsko.todolist.model.dto.TaskDto;
@@ -56,9 +57,9 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public void executeTask(Long id) {
-        Task taskToUpdate = taskRepository.getReferenceById(id);
+        Task taskToUpdate = loadTask(id);
         if (taskToUpdate.getStatus() == TaskStatus.COMPLETED) {
-            throw new ResourceNotFoundException("Статус у закупки с Id № " + id + " уже COMPLETED");
+            throw new CheckStatusException("Статус у задачи с Id № " + id + " уже COMPLETED");
         } else {
             taskToUpdate.setStatus(TaskStatus.COMPLETED);
             entityManager.flush();
@@ -79,6 +80,6 @@ public class TaskServiceImpl implements TaskService {
 
     private Task loadTask(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Задача с ID № " + id + " не найдена"));
     }
 }
