@@ -11,7 +11,7 @@ public interface TaskService {
 
     TaskDto getTaskById(Long id);
 
-    List<TaskDto> getFilteredTask(LocalDateTime startfilterdate, LocalDateTime endfilterdate, TaskStatus taskStatus);
+    List<TaskDto> getFilteredTask(LocalDateTime startFilterDate, LocalDateTime endFilterDate, TaskStatus taskStatus);
 
     void addNewTask(TaskDto taskDto);
 

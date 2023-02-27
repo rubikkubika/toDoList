@@ -1,7 +1,6 @@
 package ru.retsko.todolist.webapp.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,21 +29,21 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    ResponseEntity<List<TaskDto>> getAllTask() {
+   List<TaskDto> getAllTask() {
 
-        return ResponseEntity.ok(taskService.getAllTask());
+        return taskService.getAllTask();
     }
 
     @GetMapping("/filtered")
-    ResponseEntity<List<TaskDto>> getFilteredTask(@RequestParam(name = "startfilterdate") LocalDateTime startfilterdate,
-                                                  @RequestParam(name = "endfilterdate") LocalDateTime endfilterdate) {
+    List<TaskDto> getFilteredTask(@RequestParam(name = "startfilterdate") LocalDateTime startFilterDate,
+                                                  @RequestParam(name = "endfilterdate") LocalDateTime endFilterDate) {
 
-        return ResponseEntity.ok(taskService.getFilteredTask(startfilterdate, endfilterdate, TaskStatus.CREATED));
+        return taskService.getFilteredTask(startFilterDate, endFilterDate, TaskStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<TaskDto> getTaskById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(taskService.getTaskById(id));
+    TaskDto getTaskById(@PathVariable(name = "id") Long id) {
+        return taskService.getTaskById(id);
     }
 
     @PutMapping("/addnewtask")
@@ -53,18 +52,18 @@ public class TaskController {
     }
 
     @DeleteMapping("/deletetask")
-    void deleteTask(@RequestParam(name = "id", defaultValue = "") Long id) {
+    void deleteTask(@RequestParam(name = "id") Long id) {
         taskService.deleteTask(id);
     }
 
     @GetMapping("/toptencompleted")
-    ResponseEntity<List<TaskDto>> getTop10CompletedTask() {
+    List<TaskDto> getTop10CompletedTask() {
 
-        return ResponseEntity.ok(taskService.getTop10TaskByStatus(TaskStatus.COMPLETED));
+        return taskService.getTop10TaskByStatus(TaskStatus.COMPLETED);
     }
 
     @PatchMapping("/executetask")
-    void executeTask(@RequestParam(name = "id", defaultValue = "") Long id) {
+    void executeTask(@RequestParam(name = "id") Long id) {
         taskService.executeTask(id);
     }
 

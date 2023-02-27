@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.retsko.todolist.dao.TaskRepository;
+import ru.retsko.todolist.exception.ResourceNotFoundException;
 import ru.retsko.todolist.mappers.TaskMapper;
 import ru.retsko.todolist.model.dto.TaskDto;
 import ru.retsko.todolist.model.enums.TaskStatus;
@@ -31,17 +32,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTaskById(Long id) {
-        if (taskRepository.findById(id).isPresent()) {
-            return taskMapper.toDto((taskRepository.findById(id).get()));
-        }
-        return null;
+        return taskMapper.toDto((taskRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product with id " + id + " not found"))));
     }
 
     @Override
-    public List<TaskDto> getFilteredTask(LocalDateTime startfilterdate, LocalDateTime endfilterdate, TaskStatus taskStatus) {
+    public List<TaskDto> getFilteredTask(LocalDateTime startFilterDate, LocalDateTime endFilterDate, TaskStatus taskStatus) {
 
-        endfilterdate = endfilterdate.plusDays(1);
-        return taskMapper.toDtoList(taskRepository.findByStartBetweenAndStatus(startfilterdate, endfilterdate, taskStatus));
+        return taskMapper.toDtoList(taskRepository.findByStartBetweenAndStatus(startFilterDate, endFilterDate.plusDays(1), taskStatus));
     }
 
     @Override
@@ -52,15 +50,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+        }else{
+            throw new ResourceNotFoundException("Product with id " + id + " not found");
+        }
     }
 
     @Override
     public void executeTask(Long id) {
-        if (taskRepository.findById(id).isPresent()) {
-            taskRepository.findById(id).get().setStatus(TaskStatus.COMPLETED);
-            taskRepository.flush();
-        }
+        taskRepository.findById(id).ifPresentOrElse(
+                task -> task.setStatus(TaskStatus.COMPLETED),
+                () -> {
+                    throw new ResourceNotFoundException("Product with id " + id + " not found");
+                }
+        );
     }
 
     @Transactional
