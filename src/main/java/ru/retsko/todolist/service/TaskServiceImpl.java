@@ -60,10 +60,9 @@ public class TaskServiceImpl implements TaskService {
         Task taskToUpdate = loadTask(id);
         if (taskToUpdate.getStatus() == TaskStatus.COMPLETED) {
             throw new CheckStatusException("Статус у задачи с Id № " + id + " уже COMPLETED");
-        } else {
-            taskToUpdate.setStatus(TaskStatus.COMPLETED);
-            entityManager.flush();
         }
+        taskToUpdate.setStatus(TaskStatus.COMPLETED);
+        entityManager.flush();
     }
 
     @Transactional
